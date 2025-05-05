@@ -1,10 +1,4 @@
-import OpenAI from "openai";
-import * as dotenv from "dotenv";
-dotenv.config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
+import { openai } from "../providers/connectClient";
 
 export async function getEmbedding(text: string): Promise<number[]> {
   const res = await openai.embeddings.create({

@@ -1,11 +1,26 @@
+// {
+//   "compilerOptions": {
+//     "target": "es2016",
+//     "module": "commonjs",
+//     "outDir": "./dist",
+//     "esModuleInterop": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "strict": true,
+//     "skipLibCheck": true
+//   }
+// }
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "outDir": "./dist",
+    "module": "ESNext", // OF: "NodeNext"
+    "moduleResolution": "Node", // Zorgt voor correcte module-imports
+    "target": "ES2020", // Minimaal vereist voor import.meta
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "strict": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
