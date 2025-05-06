@@ -1,6 +1,7 @@
 import { generateMarkdownReport } from "./lib/helpers/generateMarkdownReport";
 import { searchInMilvus } from "./lib/helpers/searchInMilvus";
 import { searchInQdrant } from "./lib/helpers/searchInQdrant";
+import data from "./lib/data/names.json";
 
 // async function main() {
 //   const query = "Een leeuw vliegt in de bergen.";
@@ -19,6 +20,7 @@ async function main() {
     "Wat is de hoofdstad van Frankrijk?",
     "Hoe werkt quantumcomputing?",
   ];
+
 
   const milvusMetricsList: any[] = [];
   const qdrantMetricsList: any[] = [];
