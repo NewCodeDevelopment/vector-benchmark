@@ -22,14 +22,26 @@ function formatMemory(mem: NodeJS.MemoryUsage): string {
 export async function generateMarkdownReport(
   milvusList: SearchMetrics[],
   qdrantList: SearchMetrics[],
-  queries: string[],
-  groundTruths?: string[][]
+  queries: string[]
 ) {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Amsterdam",
+  };
+
   const timestamp = new Date().toISOString();
+  const date = new Date(timestamp);
+
+  const readableDate = date.toLocaleString("nl-NL", options);
+
   const lines: string[] = [];
 
   lines.push(`# Vergelijkingsrapport`);
-  lines.push(`**Timestamp:** ${timestamp}`);
+  lines.push(`**Timestamp:** ${readableDate}`);
   lines.push("");
 
   // Loop door alle zoekopdrachten

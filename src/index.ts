@@ -13,8 +13,22 @@ async function main() {
       "Lucie Declerck",
       "Zoe Declerck",
     ], // Expected relevant results for "Sam Declerck"
-    ["Lucas", "Lucas Smith", "Lucas Johnson"], // Expected relevant results for "Lucas"
-    ["MBA", "Master of Business Administration", "Business Administration"], // Expected relevant results for "MBA"
+    [
+      "Lucas",
+      "Lucas Smith",
+      "Lucas Johnson",
+      "Luca Verhaeghe",
+      "Lukas Maes",
+      "Lucie Declerck",
+      "Lucie Jacobs",
+    ], // Expected relevant results for "Lucas"
+    [
+      "Sofia Thijs MBA",
+      "Rayan Desmet MBA",
+      "Janne Smet MBA",
+      "Noor Willems MBA",
+      "Robin Goossens MBA",
+    ], // Expected relevant results for "MBA"
   ];
 
   const milvusMetricsList: any[] = [];
@@ -36,12 +50,7 @@ async function main() {
     qdrantMetricsList.push(qdrantMetrics);
   }
 
-  await generateMarkdownReport(
-    milvusMetricsList,
-    qdrantMetricsList,
-    queries,
-    groundTruths
-  );
+  await generateMarkdownReport(milvusMetricsList, qdrantMetricsList, queries);
 }
 
 main().catch(console.error);
