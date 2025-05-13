@@ -12,7 +12,7 @@ async function main() {
       "Sam Claeys",
       "Lucie Declerck",
       "Zoe Declerck",
-    ], // Expected relevant results for "Sam Declerck"
+    ],
     [
       "Lucas",
       "Lucas Smith",
@@ -21,14 +21,14 @@ async function main() {
       "Lukas Maes",
       "Lucie Declerck",
       "Lucie Jacobs",
-    ], // Expected relevant results for "Lucas"
+    ],
     [
       "Sofia Thijs MBA",
       "Rayan Desmet MBA",
       "Janne Smet MBA",
       "Noor Willems MBA",
       "Robin Goossens MBA",
-    ], // Expected relevant results for "MBA"
+    ],
   ];
 
   const milvusMetricsList: any[] = [];
@@ -39,18 +39,34 @@ async function main() {
     const query = queries[i];
     const groundTruth = groundTruths[i];
 
-    console.log(`🏃‍♂️ Uitvoeren van zoekopdracht: "${query}"`);
+    console.log(`Uitvoeren van zoekopdracht: "${query}"`);
 
-    // Milvus en Qdrant zoeken voor deze query
     const milvusMetrics = await searchInMilvus(query, groundTruth);
     const qdrantMetrics = await searchInQdrant(query, groundTruth);
 
-    // Voeg de resultaten toe aan de lijst
     milvusMetricsList.push(milvusMetrics);
     qdrantMetricsList.push(qdrantMetrics);
   }
 
-  await generateMarkdownReport(milvusMetricsList, qdrantMetricsList, queries);
+  // Bereken globale MAP
+  const milvusMAP =
+    milvusMetricsList.reduce((acc, m) => acc + m.accuracyMetrics.ap, 0) /
+    milvusMetricsList.length;
+  const qdrantMAP =
+    qdrantMetricsList.reduce((acc, m) => acc + m.accuracyMetrics.ap, 0) /
+    qdrantMetricsList.length;
+
+  console.log("\n\uD83D\uDCCA Gemiddelde MAP:");
+  console.log("Milvus MAP:", milvusMAP.toFixed(4));
+  console.log("Qdrant MAP:", qdrantMAP.toFixed(4));
+
+  await generateMarkdownReport(
+    milvusMetricsList,
+    qdrantMetricsList,
+    queries,
+    milvusMAP,
+    qdrantMAP
+  );
 }
 
 main().catch(console.error);

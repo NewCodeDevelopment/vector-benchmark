@@ -22,7 +22,9 @@ function formatMemory(mem: NodeJS.MemoryUsage): string {
 export async function generateMarkdownReport(
   milvusList: SearchMetrics[],
   qdrantList: SearchMetrics[],
-  queries: string[]
+  queries: string[],
+  milvusMAP: number,
+  qdrantMAP: number
 ) {
   const options: Intl.DateTimeFormatOptions = {
     day: "numeric",
@@ -100,7 +102,7 @@ export async function generateMarkdownReport(
         `- Precision@10: ${milvus.accuracyMetrics.precision.p10.toFixed(4)}`
       );
       lines.push(`- MRR: ${milvus.accuracyMetrics.mrr.toFixed(4)}`);
-      lines.push(`- MAP: ${milvus.accuracyMetrics.map.toFixed(4)}`);
+      lines.push(`- AP: ${milvus.accuracyMetrics.ap.toFixed(4)}`);
 
       lines.push(`#### Qdrant`);
       lines.push(
@@ -116,7 +118,7 @@ export async function generateMarkdownReport(
         `- Precision@10: ${qdrant.accuracyMetrics.precision.p10.toFixed(4)}`
       );
       lines.push(`- MRR: ${qdrant.accuracyMetrics.mrr.toFixed(4)}`);
-      lines.push(`- MAP: ${qdrant.accuracyMetrics.map.toFixed(4)}`);
+      lines.push(`- AP: ${qdrant.accuracyMetrics.ap.toFixed(4)}`);
       lines.push("");
     }
 
@@ -135,12 +137,15 @@ export async function generateMarkdownReport(
     lines.push("");
   });
 
+  lines.push(`**Milvus MAP:** ${milvusMAP.toFixed(4)}`);
+  lines.push("");
+  lines.push(`**Qdrant MAP:** ${qdrantMAP.toFixed(4)}`);
+
   // Schrijf naar het bestand
   const markdown = lines.join("\n");
   const outputPath = path.resolve("results/search_comparison_report.md");
 
   await fs.ensureDir(path.dirname(outputPath));
-
   await fs.writeFile(outputPath, markdown, "utf-8");
 
   console.log(`✅ Markdown rapport opgeslagen in ${outputPath}`);

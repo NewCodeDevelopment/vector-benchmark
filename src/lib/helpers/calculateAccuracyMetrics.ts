@@ -17,16 +17,10 @@ export function calculateAccuracyMetrics(
     p10: calculatePrecisionAtK(retrievedItems, groundTruth, 10),
   };
 
-  // // Calculate Mean Reciprocal Rank (MRR)
-  // const mrr = calculateMRR(retrievedItems, groundTruth);
-
-  // // Calculate Mean Average Precision (MAP)
-  // const map = calculateMAP(retrievedItems, groundTruth);
-
   return {
     precision,
     mrr: calculateMRR(retrievedItems, groundTruth),
-    map: calculateMAP(retrievedItems, groundTruth),
+    ap: calculateAP(retrievedItems, groundTruth),
   };
 }
 
@@ -81,28 +75,27 @@ function calculateMRR(retrievedItems: string[], groundTruth: string[]) {
   return 0;
 }
 
-function calculateMAP(retrievedItems: string[], groundTruth: string[]) {
+function calculateAP(retrievedItems: string[], groundTruth: string[]) {
   let relevantCount = 0;
   let sumPrecision = 0;
 
   for (let i = 0; i < retrievedItems.length; i++) {
-    retrievedItems.forEach((item, i) => {
-      if (isRelevant(item, groundTruth)) {
-        relevantCount++;
-        sumPrecision += relevantCount / (i + 1);
-      }
-    });
-    // const isRelevant = groundTruth.some(
-    //   (truth) =>
-    //     retrievedItems[i].toLowerCase().includes(truth.toLowerCase()) ||
-    //     truth.toLowerCase().includes(retrievedItems[i].toLowerCase())
-    // );
-
-    // if (isRelevant) {
-    //   relevantCount++;
-    //   sumPrecision += relevantCount / (i + 1);
-    // }
+    if (isRelevant(retrievedItems[i], groundTruth)) {
+      relevantCount++;
+      sumPrecision += relevantCount / (i + 1);
+    }
   }
 
   return relevantCount > 0 ? sumPrecision / groundTruth.length : 0;
+  // const isRelevant = groundTruth.some(
+  //   (truth) =>
+  //     retrievedItems[i].toLowerCase().includes(truth.toLowerCase()) ||
+  //     truth.toLowerCase().includes(retrievedItems[i].toLowerCase())
+  // );
+
+  // if (isRelevant) {
+  //   relevantCount++;
+  //   sumPrecision += relevantCount / (i + 1);
+  // }
+  // return relevantCount > 0 ? sumPrecision / groundTruth.length : 0;
 }
