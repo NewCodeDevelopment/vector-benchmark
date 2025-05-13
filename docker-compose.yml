@@ -66,6 +66,11 @@ services:
     depends_on:
       - "etcd"
       - "minio"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: "2.0"
 
   # Qdrant container voor vector search
   qdrant:
@@ -89,6 +94,11 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: "2.0"
 
 networks:
   default:

@@ -44,4 +44,3 @@ next-env.d.ts
 volumes
 qdrant_data
 results
-benchmark-report.html

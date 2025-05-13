@@ -2,10 +2,11 @@ import { getEmbedding } from "./getEmbedding";
 import { qdrantClient } from "../providers/connectClient";
 import { normalizeVector } from "./normalizeVector";
 import "dotenv/config";
+import { calculateAccuracyMetrics } from "./calculateAccuracyMetrics";
 
 const collectionName = process.env.COLLECTION_NAME!;
 
-export async function searchInQdrant(query: string) {
+export async function searchInQdrant(query: string, groundTruth?: string[]) {
   console.log("📡 Verbinden met Qdrant voor zoekopdracht...");
 
   const queryVector = await getEmbedding(query);
@@ -28,11 +29,20 @@ export async function searchInQdrant(query: string) {
 
   results.points.forEach((point) => {
     console.log(
-      `ID: ${point.id}, Score: ${point.score.toFixed(4)}, Text: ${
-        point.payload?.text
+      `ID: ${point.id}, Score: ${point.score.toFixed(4)}, Name: ${
+        point.payload?.name
       }`
     );
   });
+
+  let accuracyMetrics = null;
+  if (groundTruth) {
+    accuracyMetrics = calculateAccuracyMetrics(
+      results.points,
+      groundTruth,
+      true
+    );
+  }
 
   return {
     durationMs,
@@ -43,5 +53,6 @@ export async function searchInQdrant(query: string) {
       heapUsed: afterMemory.heapUsed - beforeMemory.heapUsed,
     },
     results: results.points,
+    accuracyMetrics,
   };
 }

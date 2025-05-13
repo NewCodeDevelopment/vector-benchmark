@@ -1,45 +1,47 @@
 import { generateMarkdownReport } from "./lib/helpers/generateMarkdownReport";
 import { searchInMilvus } from "./lib/helpers/searchInMilvus";
 import { searchInQdrant } from "./lib/helpers/searchInQdrant";
-import data from "./lib/data/names.json";
-
-// async function main() {
-//   const query = "Een leeuw vliegt in de bergen.";
-
-//   const milvusMetrics = await searchInMilvus(query);
-//   const qdrantMetrics = await searchInQdrant(query);
-
-//   await generateMarkdownReport(milvusMetrics, qdrantMetrics, query);
-// }
-
-// main().catch(console.error);
 
 async function main() {
-  const queries = [
-    "Een leeuw vliegt in de bergen.",
-    "Wat is de hoofdstad van Frankrijk?",
-    "Hoe werkt quantumcomputing?",
-  ];
+  const queries = ["Sam Declerck", "Lucas", "MBA"];
 
+  const groundTruths = [
+    [
+      "Sam Declerck",
+      "Sam Claeys",
+      "Sam Claeys",
+      "Lucie Declerck",
+      "Zoe Declerck",
+    ], // Expected relevant results for "Sam Declerck"
+    ["Lucas", "Lucas Smith", "Lucas Johnson"], // Expected relevant results for "Lucas"
+    ["MBA", "Master of Business Administration", "Business Administration"], // Expected relevant results for "MBA"
+  ];
 
   const milvusMetricsList: any[] = [];
   const qdrantMetricsList: any[] = [];
 
   // Voer voor elke query de zoekopdrachten uit
-  for (const query of queries) {
+  for (let i = 0; i < queries.length; i++) {
+    const query = queries[i];
+    const groundTruth = groundTruths[i];
+
     console.log(`🏃‍♂️ Uitvoeren van zoekopdracht: "${query}"`);
 
     // Milvus en Qdrant zoeken voor deze query
-    const milvusMetrics = await searchInMilvus(query);
-    const qdrantMetrics = await searchInQdrant(query);
+    const milvusMetrics = await searchInMilvus(query, groundTruth);
+    const qdrantMetrics = await searchInQdrant(query, groundTruth);
 
     // Voeg de resultaten toe aan de lijst
     milvusMetricsList.push(milvusMetrics);
     qdrantMetricsList.push(qdrantMetrics);
   }
 
-  // Genereer het Markdown-rapport voor alle zoekopdrachten
-  await generateMarkdownReport(milvusMetricsList, qdrantMetricsList, queries);
+  await generateMarkdownReport(
+    milvusMetricsList,
+    qdrantMetricsList,
+    queries,
+    groundTruths
+  );
 }
 
 main().catch(console.error);

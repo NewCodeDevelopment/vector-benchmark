@@ -3,8 +3,9 @@ import { milvusClient } from "../providers/connectClient";
 import { getEmbedding } from "./getEmbedding";
 import "dotenv/config";
 import { normalizeVector } from "./normalizeVector";
+import { calculateAccuracyMetrics } from "./calculateAccuracyMetrics";
 
-export async function searchInMilvus(query: string) {
+export async function searchInMilvus(query: string, groundTruth?: string[]) {
   console.log("📡 Verbinden met Milvus...");
 
   const queryVector = await getEmbedding(query);
@@ -22,11 +23,16 @@ export async function searchInMilvus(query: string) {
       topk: "10",
       metric_type: "COSINE",
     },
-    output_fields: ["id", "text"],
+    output_fields: ["id", "naam"],
   });
 
   const durationMs = performance.now() - start;
   const afterMemory = process.memoryUsage();
+  // Calculate accuracy metrics if ground truth is provided
+  let accuracyMetrics = null;
+  if (groundTruth) {
+    accuracyMetrics = calculateAccuracyMetrics(results.results, groundTruth);
+  }
 
   console.log("🔍 Zoekresultaat:", JSON.stringify(results.results, null, 2));
 
@@ -39,5 +45,6 @@ export async function searchInMilvus(query: string) {
       heapUsed: afterMemory.heapUsed - beforeMemory.heapUsed,
     },
     results: results.results,
+    accuracyMetrics,
   };
 }

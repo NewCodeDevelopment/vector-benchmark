@@ -1,5 +1,5 @@
 import { getEmbedding } from "../helpers/getEmbedding";
-import { zinnen } from "../data/data";
+import names from "../data/names.json";
 import { qdrantClient } from "../providers/connectClient";
 import { normalizeVector } from "../helpers/normalizeVector";
 import "dotenv/config";
@@ -25,13 +25,13 @@ export async function insertQdrantData() {
   });
 
   const fields_data = await Promise.all(
-    zinnen.map(async (text, i) => {
-      const embedding = await getEmbedding(text);
+    names.map(async (name, i) => {
+      const embedding = await getEmbedding(name);
       const normalized = normalizeVector(embedding);
       return {
         id: i + 1,
         vector: normalized,
-        payload: { text },
+        payload: { name },
       };
     })
   );

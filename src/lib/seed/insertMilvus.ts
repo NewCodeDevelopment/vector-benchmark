@@ -1,6 +1,6 @@
 import { DataType } from "@zilliz/milvus2-sdk-node";
 import { milvusClient } from "../providers/connectClient";
-import { zinnen } from "../data/data";
+import names from "../data/names.json";
 import { normalizeVector } from "../helpers/normalizeVector";
 import { getEmbedding } from "../helpers/getEmbedding";
 import "dotenv/config";
@@ -35,7 +35,7 @@ export async function insertMilvusData() {
         type_params: { dim: "1536" },
       },
       {
-        name: "text",
+        name: "naam",
         data_type: DataType.VarChar,
         type_params: { max_length: "1024" },
       },
@@ -44,13 +44,13 @@ export async function insertMilvusData() {
   console.log("✅ Milvus collectie aangemaakt");
 
   const fields_data = await Promise.all(
-    zinnen.map(async (text, i) => {
-      const embedding = await getEmbedding(text);
+    names.map(async (naam: string, i: number) => {
+      const embedding = await getEmbedding(naam);
       const normalized = normalizeVector(embedding);
       return {
         id: i + 1,
         embedding: normalized,
-        text: text,
+        naam: naam,
       };
     })
   );
