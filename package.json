@@ -7,7 +7,6 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "tsx src/lib/seed/index.ts",
-    "data": "tsx src/lib/scripts/generateZinnen.ts",
     "script": "tsx src/lib/scripts/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,7 +29,8 @@
   "devDependencies": {
     "@types/benchmark": "^2.1.5",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.15.3"
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4"
   },
   "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
 }

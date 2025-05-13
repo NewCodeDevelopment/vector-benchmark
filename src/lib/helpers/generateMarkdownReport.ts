@@ -126,6 +126,9 @@ export async function generateMarkdownReport(
   // Schrijf naar het bestand
   const markdown = lines.join("\n");
   const outputPath = path.resolve("results/search_comparison_report.md");
+
+  await fs.ensureDir(path.dirname(outputPath));
+
   await fs.writeFile(outputPath, markdown, "utf-8");
 
   console.log(`✅ Markdown rapport opgeslagen in ${outputPath}`);
