@@ -1,20 +1,23 @@
-import { getEmbedding } from "../helpers/getEmbedding";
-import names from "../data/names.json";
 import { qdrantClient } from "../providers/connectClient";
-import { normalizeVector } from "../helpers/normalizeVector";
 import "dotenv/config";
 
 const collectionName = process.env.COLLECTION_NAME!;
 
-export async function insertQdrantData() {
-  console.log("📡 Verbinden met Qdrant...");
+export async function insertQdrantData(
+  fields_data: {
+    id: number;
+    vector: number[];
+    payload: { name: string };
+  }[]
+) {
+  console.log("- Verbinden met Qdrant...");
 
   const collection = await qdrantClient.collectionExists(collectionName);
 
   if (collection) {
-    console.log("✅ Qdrant collectie bestaat al, verwijderen...");
+    console.log("Qdrant collectie bestaat al, verwijderen...");
     await qdrantClient.deleteCollection(collectionName);
-    console.log("✅ Qdrant collectie verwijderd");
+    console.log("Qdrant collectie verwijderd");
   }
 
   await qdrantClient.createCollection(collectionName, {
@@ -24,19 +27,8 @@ export async function insertQdrantData() {
     },
   });
 
-  const fields_data = await Promise.all(
-    names.map(async (name, i) => {
-      const embedding = await getEmbedding(name);
-      const normalized = normalizeVector(embedding);
-      return {
-        id: i + 1,
-        vector: normalized,
-        payload: { name },
-      };
-    })
-  );
+  const start = performance.now();
 
-  // Gegevens invoegen in Qdrant
   await qdrantClient.upsert(collectionName, {
     points: fields_data.map((data) => ({
       id: data.id,
@@ -45,5 +37,26 @@ export async function insertQdrantData() {
     })),
   });
 
-  console.log("💾 Data ingevoegd in Qdrant");
+  await waitUntilQdrantIndexReady(collectionName);
+
+  const durationMs = performance.now() - start;
+
+  console.log("Data ingevoegd in Qdrant");
+
+  return {
+    durationMs,
+    count: fields_data.length,
+  };
+}
+
+async function waitUntilQdrantIndexReady(
+  collectionName: string
+): Promise<void> {
+  while (true) {
+    const info = await qdrantClient.getCollection(collectionName);
+    if (info.status === "green") {
+      return; // Index is klaar
+    }
+    await new Promise((r) => setTimeout(r, 100));
+  }
 }

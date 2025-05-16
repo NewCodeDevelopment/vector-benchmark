@@ -1,23 +1,26 @@
 import { DataType } from "@zilliz/milvus2-sdk-node";
 import { milvusClient } from "../providers/connectClient";
-import names from "../data/names.json";
-import { normalizeVector } from "../helpers/normalizeVector";
-import { getEmbedding } from "../helpers/getEmbedding";
 import "dotenv/config";
 
 const collectionName = process.env.COLLECTION_NAME!;
 
-export async function insertMilvusData() {
-  console.log("📡 Verbinden met Milvus...");
+export async function insertMilvusData(
+  fields_data: {
+    id: number;
+    embedding: number[];
+    naam: string;
+  }[]
+) {
+  console.log("- Verbinden met Milvus...");
 
   const collection = await milvusClient.hasCollection({
     collection_name: collectionName,
   });
 
   if (collection) {
-    console.log("✅ Milvus collectie bestaat al, verwijderen...");
+    console.log("Milvus collectie bestaat al, verwijderen...");
     await milvusClient.dropCollection({ collection_name: collectionName });
-    console.log("✅ Milvus collectie verwijderd");
+    console.log("Milvus collectie verwijderd");
   }
 
   await milvusClient.createCollection({
@@ -41,27 +44,15 @@ export async function insertMilvusData() {
       },
     ],
   });
-  console.log("✅ Milvus collectie aangemaakt");
+  console.log("Milvus collectie aangemaakt");
 
-  const fields_data = await Promise.all(
-    names.map(async (naam: string, i: number) => {
-      const embedding = await getEmbedding(naam);
-      const normalized = normalizeVector(embedding);
-      return {
-        id: i + 1,
-        embedding: normalized,
-        naam: naam,
-      };
-    })
-  );
-
+  const start = performance.now();
   await milvusClient.insert({
     collection_name: collectionName,
     fields_data,
   });
 
   await milvusClient.flush({ collection_names: [collectionName] });
-  console.log("💾 Data ingevoegd in Milvus");
 
   await milvusClient.createIndex({
     collection_name: collectionName,
@@ -73,5 +64,11 @@ export async function insertMilvusData() {
 
   await milvusClient.loadCollection({ collection_name: collectionName });
 
-  console.log("✅ Milvus setup voltooid");
+  const durationMs = performance.now() - start;
+
+  console.log("Data ingevoegd in Milvus");
+  return {
+    durationMs,
+    count: fields_data.length,
+  };
 }

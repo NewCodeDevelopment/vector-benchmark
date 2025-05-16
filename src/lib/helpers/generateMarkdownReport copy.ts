@@ -4,6 +4,8 @@ import fs from "fs-extra";
 export interface SearchMetrics {
   accuracyMetrics: any;
   durationMs: number;
+  milvusStats: string;
+  qdrantStats: string;
   memoryBefore: NodeJS.MemoryUsage;
   memoryAfter: NodeJS.MemoryUsage;
   memoryDiff: {
@@ -60,6 +62,11 @@ export async function generateMarkdownReport(
     lines.push(`- **Qdrant:** ${qdrant.durationMs.toFixed(2)} ms`);
     lines.push("");
 
+    lines.push(`### Docker Container Geheugenverbruik`);
+    lines.push(`- **Milvus:** ${milvus.milvusStats}`);
+    lines.push(`- **Qdrant:** ${qdrant.qdrantStats}`);
+    lines.push("");
+
     // Voeg geheugenverbruik toe
     lines.push(`### Geheugenverbruik`);
     lines.push(`#### Milvus`);
@@ -90,7 +97,7 @@ export async function generateMarkdownReport(
 
       lines.push(`#### Milvus`);
       lines.push(
-        `- Precision@1: ${milvus.accuracyMetrics.precision.p1.toFixed(4)}`
+        `- Precision@1: ${milvus.accuracyMetrics.precision.p1.toFixed(10)}`
       );
       lines.push(
         `- Precision@3: ${milvus.accuracyMetrics.precision.p3.toFixed(4)}`
@@ -148,5 +155,5 @@ export async function generateMarkdownReport(
   await fs.ensureDir(path.dirname(outputPath));
   await fs.writeFile(outputPath, markdown, "utf-8");
 
-  console.log(`✅ Markdown rapport opgeslagen in ${outputPath}`);
+  console.log(`Markdown rapport opgeslagen in ${outputPath}`);
 }

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "speed": "tsx watch src/speed.ts",
+    "load": "tsx src/load.ts",
+    "devload": "tsx watch src/load.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "tsx src/lib/seed/index.ts",
