@@ -31,3 +31,19 @@ export async function searchInMilvus(query: string, groundTruth?: string[]) {
     results: results.results,
   };
 }
+
+export async function searchInMilvus2(query: number[]) {
+  console.log("Verbinden met Milvus...");
+
+  await milvusClient.search({
+    collection_name: process.env.COLLECTION_NAME!,
+    vector: query,
+    vector_type: DataType.FloatVector,
+    params: {
+      anns_field: "embedding",
+      topk: "10",
+      metric_type: "COSINE",
+    },
+    output_fields: ["id", "naam"],
+  });
+}

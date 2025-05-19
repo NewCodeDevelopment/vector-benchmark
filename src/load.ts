@@ -1,22 +1,28 @@
 import fs from "fs/promises";
-import { searchInMilvus } from "./lib/helpers/searchInMilvus";
-import { searchInQdrant } from "./lib/helpers/searchInQdrant";
+import { searchInMilvus2 } from "./lib/helpers/searchInMilvus";
+import { searchInQdrant2 } from "./lib/helpers/searchInQdrant";
 
-async function runQueryForName(name: string) {
-  return Promise.all([searchInMilvus(name), searchInQdrant(name)]);
-}
+const dataSmall: number[][] = JSON.parse(
+  await fs.readFile("src/data/data-small.json", "utf-8")
+);
 
-async function main() {
-  const namesRaw = await fs.readFile("src/lib/data/names.json", "utf-8");
-  const names = JSON.parse(namesRaw);
+const dataMedium = [...dataSmall, ...dataSmall, ...dataSmall];
 
-  const doubledNames = [...names, ...names, ...names];
+const dataLarge = [
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+];
 
-  const shuffled = doubledNames.toSorted(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, 1500);
+console.info("Start Milvus");
+await Promise.all(dataSmall.map((embedding) => searchInMilvus2(embedding)));
+console.info("Stop Milvus");
 
-  await Promise.all(selected.map(runQueryForName));
-  console.log("Done");
-}
+console.info("Start Qdrant");
+await Promise.all(dataSmall.map((embedding) => searchInQdrant2(embedding)));
+console.info("Stop Qdrant");
 
-main().catch(console.error);
+console.log("Length", dataSmall.length);
+console.log("Done");

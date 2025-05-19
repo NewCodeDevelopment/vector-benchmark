@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Docker Stats Visualisatie</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      canvas {
+        max-width: 1000px;
+        height: 400px; /* Voeg deze regel toe of pas aan */
+        margin: 30px auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="text-align: center">Docker Memory Usage Over Time</h2>
+    <canvas id="milvusChart" width="1000" height="400"></canvas>
+    <canvas id="qdrantChart" width="1000" height="400"></canvas>
+    <canvas id="milvusChartCPU" width="1000" height="400"></canvas>
+    <canvas id="qdrantChartCPU" width="1000" height="400"></canvas>
+    <script>
+      function parseMemory(str) {
+        const [used] = str.split(" / ");
+        const num = parseFloat(used);
+        if (used.includes("GiB")) return num * 1.074; // GiB → GB
+        if (used.includes("MiB")) return num * 1.048576; // MiB → MB
+        return 0;
+      }
+
+      function parseCPU(str) {
+        if (typeof str !== "string") return 0;
+        return parseFloat(str.replace("%", "")) || 0;
+      }
+
+      fetch("./results/milvus-standalone-output.json")
+        .then((res) => res.text())
+        .then((text) => {
+          let stats;
+          try {
+            stats = JSON.parse(text);
+          } catch (e) {
+            console.error("JSON.parse failed:", e);
+            return;
+          }
+
+          if (!Array.isArray(stats)) {
+            console.error("stats is not an array:", stats);
+            return;
+          }
+
+          const timestamps = stats.map((s) =>
+            new Date(s.timestamp).toLocaleTimeString()
+          );
+
+          const milvusMem = stats.map((s) => {
+            return parseMemory(s.MemUsage || "0MiB");
+          });
+
+          const milvusCPUPerc = stats.map((s) => parseCPU(s.CPUPerc || "0%"));
+
+          new Chart(document.getElementById("milvusChart"), {
+            type: "line",
+            data: {
+              labels: timestamps,
+              datasets: [
+                {
+                  label: "Milvus Memory (MiB)",
+                  data: milvusMem,
+                  borderColor: "rgba(75, 192, 192, 1)",
+                  fill: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              // maintainAspectRatio: false,
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function (value) {
+                      return value.toFixed(2) + " MB";
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          new Chart(document.getElementById("milvusChartCPU"), {
+            type: "line",
+            data: {
+              labels: timestamps,
+              datasets: [
+                {
+                  label: "Milvus CPU",
+                  data: milvusCPUPerc,
+                  borderColor: "rgba(75, 192, 192, 1)",
+                  fill: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              // maintainAspectRatio: false,
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function (value) {
+                      return value + "%";
+                    },
+                  },
+                },
+              },
+            },
+          });
+        })
+        .catch((err) => {
+          console.error("Error loading JSON:", err);
+        });
+      fetch("./results/qdrant-output.json")
+        .then((res) => res.text())
+        .then((text) => {
+          let stats;
+          try {
+            stats = JSON.parse(text);
+          } catch (e) {
+            console.error("JSON.parse failed:", e);
+            return;
+          }
+
+          if (!Array.isArray(stats)) {
+            console.error("stats is not an array:", stats);
+            return;
+          }
+
+          const timestamps = stats.map((s) =>
+            new Date(s.timestamp).toLocaleTimeString()
+          );
+
+          const qdrantMem = stats.map((s) => {
+            return parseMemory(s.MemUsage || "0MiB");
+          });
+
+          const qdrantCPUPerc = stats.map((s) => parseCPU(s.CPUPerc || "0%"));
+
+          new Chart(document.getElementById("qdrantChart"), {
+            type: "line",
+            data: {
+              labels: timestamps,
+              datasets: [
+                {
+                  label: "Qdrant Memory (MiB)",
+                  data: qdrantMem,
+                  borderColor: "#800080",
+                  fill: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              // maintainAspectRatio: false,
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function (value) {
+                      return value.toFixed(2) + " MB";
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          new Chart(document.getElementById("qdrantChartCPU"), {
+            type: "line",
+            data: {
+              labels: timestamps,
+              datasets: [
+                {
+                  label: "Qdrant CPU",
+                  data: qdrantCPUPerc,
+                  borderColor: "#800080",
+                  fill: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              // maintainAspectRatio: false,
+              scales: {
+                y: {
+                  ticks: {
+                    callback: function (value) {
+                      return value + "%";
+                    },
+                  },
+                },
+              },
+            },
+          });
+        })
+
+        .catch((err) => {
+          console.error("Error loading JSON:", err);
+        });
+    </script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 import { generateSpeedInsertMarkdownReport } from "../helpers/generateMarkdownReports";
 import { insertMilvusData } from "./insertMilvus";
 import { insertQdrantData } from "./insertQdrent";
-import names from "../data/names.json";
+import names from "../../data/names.json";
 import * as dotenv from "dotenv";
 import { getEmbedding } from "../helpers/getEmbedding";
 import { normalizeVector } from "../helpers/normalizeVector";

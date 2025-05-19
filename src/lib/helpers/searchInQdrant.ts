@@ -29,3 +29,16 @@ export async function searchInQdrant(query: string, groundTruth?: string[]) {
     results: results.points,
   };
 }
+
+export async function searchInQdrant2(query: number[]) {
+  console.log("Verbinden met Qdrant voor zoekopdracht...");
+
+  await qdrantClient.query(collectionName, {
+    query,
+    limit: 10,
+    with_payload: true,
+    params: {
+      exact: true,
+    },
+  });
+}

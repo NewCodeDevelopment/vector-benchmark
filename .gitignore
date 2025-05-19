@@ -44,3 +44,7 @@ next-env.d.ts
 volumes
 qdrant_data
 results
+docker-stats.json
+docker-stats.jsonl
+src/data/data-large.json
+src/data/data-small.json

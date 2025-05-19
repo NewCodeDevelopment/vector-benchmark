@@ -5,6 +5,8 @@
   "scripts": {
     "speed": "tsx watch src/speed.ts",
     "load": "tsx src/load.ts",
+    "load:generate": "tsx src/generate/load.ts",
+    "logger": "tsx src/logger.ts",
     "devload": "tsx watch src/load.ts",
     "build": "tsc",
     "start": "node dist/index.js",
@@ -21,6 +23,7 @@
     "@qdrant/js-client-rest": "^1.14.0",
     "@zilliz/milvus2-sdk-node": "^2.5.8",
     "benchmark": "^2.1.4",
+    "dockerode": "^4.0.6",
     "dotenv": "^16.5.0",
     "fs-extra": "^11.3.0",
     "next": "^15.3.1",
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.5",
+    "@types/dockerode": "^3.3.38",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.15.3",
     "tsx": "^4.19.4"
