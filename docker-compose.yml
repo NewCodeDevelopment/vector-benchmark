@@ -69,7 +69,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4G
+          memory: 2G
           cpus: "2.0"
 
   # Qdrant container voor vector search
@@ -97,7 +97,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4G
+          memory: 2G
           cpus: "2.0"
 
 networks:
