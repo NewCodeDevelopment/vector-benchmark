@@ -143,7 +143,7 @@ const hk = [
   ...dataSmall,
 ];
 
-// 300K
+// 200K
 const max = [...hk, ...hk];
 
 // 20K
