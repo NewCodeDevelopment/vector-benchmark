@@ -180,9 +180,9 @@ const dataLarge3 = [
   ...dataSmall,
 ];
 
-console.info("Start Milvus");
-await Promise.all(dataMedium.map((embedding) => searchInMilvus2(embedding)));
-console.info("Stop Milvus");
+// console.info("Start Milvus");
+// await Promise.all(dataMedium.map((embedding) => searchInMilvus2(embedding)));
+// console.info("Stop Milvus");
 
 console.info("Start Qdrant");
 await Promise.all(dataMedium.map((embedding) => searchInQdrant2(embedding)));
