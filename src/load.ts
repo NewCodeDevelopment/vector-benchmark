@@ -38,6 +38,16 @@ const dataMedium = [
   ...dataSmall,
   ...dataSmall,
   ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
+  ...dataSmall,
 ];
 
 const hk = [
