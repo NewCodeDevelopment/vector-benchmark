@@ -48,3 +48,4 @@ docker-stats.json
 docker-stats.jsonl
 src/data/data-large.json
 src/data/data-small.json
+results-vm

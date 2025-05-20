@@ -6,7 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       canvas {
-        max-width: 1000px;
+        max-width: 1500px;
         height: 400px; /* Voeg deze regel toe of pas aan */
         margin: 30px auto;
         display: block;
@@ -15,10 +15,10 @@
   </head>
   <body>
     <h2 style="text-align: center">Docker Memory Usage Over Time</h2>
-    <canvas id="milvusChart" width="1000" height="400"></canvas>
-    <canvas id="qdrantChart" width="1000" height="400"></canvas>
-    <canvas id="milvusChartCPU" width="1000" height="400"></canvas>
-    <canvas id="qdrantChartCPU" width="1000" height="400"></canvas>
+    <canvas id="milvusChart" width="1500" height="400"></canvas>
+    <canvas id="qdrantChart" width="1500" height="400"></canvas>
+    <canvas id="milvusChartCPU" width="1500" height="400"></canvas>
+    <canvas id="qdrantChartCPU" width="1500" height="400"></canvas>
     <script>
       function parseMemory(str) {
         const [used] = str.split(" / ");
@@ -33,6 +33,7 @@
         return parseFloat(str.replace("%", "")) || 0;
       }
 
+      // fetch("./src/results-vm/milvus-standalone-output.json")
       fetch("./results/milvus-standalone-output.json")
         .then((res) => res.text())
         .then((text) => {
@@ -118,6 +119,8 @@
         .catch((err) => {
           console.error("Error loading JSON:", err);
         });
+
+      // fetch("./src/results-vm/qdrant-output.json")
       fetch("./results/qdrant-output.json")
         .then((res) => res.text())
         .then((text) => {
