@@ -38,16 +38,6 @@ const dataMedium = [
   ...dataSmall,
   ...dataSmall,
   ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
 ];
 
 const hk = [
@@ -181,12 +171,12 @@ const dataLarge3 = [
 ];
 
 console.info("Start Milvus");
-await Promise.all(dataMedium.map((embedding) => searchInMilvus2(embedding)));
+await Promise.all(max.map((embedding) => searchInMilvus2(embedding)));
 console.info("Stop Milvus");
 
-console.info("Start Qdrant");
-await Promise.all(dataMedium.map((embedding) => searchInQdrant2(embedding)));
-console.info("Stop Qdrant");
+// console.info("Start Qdrant");
+// await Promise.all(max.map((embedding) => searchInQdrant2(embedding)));
+// console.info("Stop Qdrant");
 
-console.log("Length", dataMedium.length);
+console.log("Length", max.length);
 console.log("Done");
