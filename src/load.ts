@@ -144,7 +144,7 @@ const hk = [
 ];
 
 // 300K
-const max = [...hk, ...hk, ...hk];
+const max = [...hk, ...hk];
 
 // 20K
 const dataLarge3 = [
