@@ -6,18 +6,8 @@ const dataSmall: number[][] = JSON.parse(
   await fs.readFile("src/data/data-small.json", "utf-8")
 );
 
-// 50K
+// 40K
 const dataMedium = [
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
-  ...dataSmall,
   ...dataSmall,
   ...dataSmall,
   ...dataSmall,
